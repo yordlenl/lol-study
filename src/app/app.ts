@@ -2,13 +2,16 @@
 import { html } from 'lit';
 import { LightElement } from './light.ts';
 import './pages/home.ts';
+import './pages/practice-session.ts';
+import './pages/practice.ts';
 import './pages/review.ts';
 import './pages/settings.ts';
 import './pages/words.ts';
 import { parseHash, type Route } from './router.ts';
 
-const NAV: Array<{ page: Route['page']; label: string; href: string }> = [
-  { page: 'home', label: '首頁', href: '#/' },
+const NAV: Array<{ page: Route['page']; label: string; href: string; also?: Array<Route['page']> }> = [
+  { page: 'home', label: '首頁', href: '#/', also: ['review'] },
+  { page: 'practice', label: '練習', href: '#/practice', also: ['practice-items', 'practice-modes', 'practice-session'] },
   { page: 'words', label: '生詞本', href: '#/words' },
   { page: 'settings', label: '設定', href: '#/settings' },
 ];
@@ -48,6 +51,14 @@ export class StudyApp extends LightElement {
         return html`<page-words .tab=${r.tab}></page-words>`;
       case 'settings':
         return html`<page-settings></page-settings>`;
+      case 'practice':
+        return html`<page-practice></page-practice>`;
+      case 'practice-items':
+        return html`<page-practice-items .category=${r.category}></page-practice-items>`;
+      case 'practice-modes':
+        return html`<page-practice-modes .category=${r.category} .itemId=${r.id}></page-practice-modes>`;
+      case 'practice-session':
+        return html`<page-practice-session .category=${r.category} .itemId=${r.id} .mode=${r.mode}></page-practice-session>`;
     }
   }
 
@@ -56,7 +67,7 @@ export class StudyApp extends LightElement {
       <header class="topbar">
         <a class="brand" href="#/">LoL 英語</a>
         <nav class="nav">
-          ${NAV.map((n) => html`<a href=${n.href} class=${this.route.page === n.page ? 'current' : ''}>${n.label}</a>`)}
+          ${NAV.map((n) => html`<a href=${n.href} class=${this.route.page === n.page || n.also?.includes(this.route.page) ? 'current' : ''}>${n.label}</a>`)}
         </nav>
         <a class="switch" href="/lol-corpus/">語料庫 →</a>
       </header>

@@ -31,6 +31,11 @@ describe('正確率與最常錯的詞', () => {
     expect(accuracy(logs, at(23, 22))).toEqual({ correct: 1, total: 3 });
   });
 
+  it('練習寫錯自動記的不算進正確率', () => {
+    const logs = [log('a', at(23, 10), 3), log('b', at(23, 11), 1, { source: 'practice' })];
+    expect(accuracy(logs, at(23, 22))).toEqual({ correct: 1, total: 1 });
+  });
+
   it('依答錯次數排序，只列單字卡', () => {
     const cards = [word('orb'), word('heal'), word('fox')];
     const logs = [log('word:orb', at(20, 1), 1), log('word:heal', at(20, 1), 1), log('word:heal', at(21, 1), 1), log('word:fox', at(21, 1), 3)];

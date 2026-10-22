@@ -38,6 +38,10 @@
   --lol-toggle-on-bg: #2b8a6e;
   --lol-toggle-on-border: #2b8a6e;
   --lol-toggle-radius: 20px;
+  --lol-right: #2b8a6e;
+  --lol-wrong: #d6455d;
+  --lol-blank-bg: #f1f5f3;
+  --lol-blank-filled-bg: #e3f2ec;
 }
 
 * {
@@ -514,4 +518,261 @@ button:disabled {
   padding: 16px;
   background: var(--bg);
   border-radius: 12px;
+}
+
+/* ---------- 練習 ---------- */
+
+.back {
+  display: inline-block;
+  margin-bottom: 12px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.category,
+.mode,
+.practice-link {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.category:hover,
+.mode:hover,
+.practice-link:hover {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.category-name,
+.mode-name {
+  color: var(--text-strong);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.group-title {
+  margin: 20px 0 8px;
+  font-size: 16px;
+  color: var(--text);
+}
+
+.pick-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.pick {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 8px;
+  color: var(--text-strong);
+  text-align: center;
+  text-decoration: none;
+  background: var(--card);
+  border-radius: 14px;
+  box-shadow: 0 1px 3px rgba(29, 35, 48, 0.08);
+}
+
+.pick img {
+  border-radius: 10px;
+}
+
+.pick-name {
+  font-weight: 600;
+}
+
+.mode-list {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.rune-head {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.rune-head img {
+  border-radius: 50%;
+}
+
+.after {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 12px 0 24px;
+  padding: 14px 20px;
+  background: var(--card);
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(29, 35, 48, 0.08);
+}
+
+.after p {
+  margin: 0;
+}
+
+.ok-text {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.bad-text {
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.question-zh {
+  margin: 8px 0;
+  color: var(--text-strong);
+  font-size: 22px;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+.question-zh.cn {
+  color: var(--text);
+  font-size: 18px;
+}
+
+.write-area {
+  display: block;
+  width: 100%;
+  min-height: 120px;
+  margin-top: 8px;
+  padding: 16px 20px;
+  font-size: 26px;
+  font-weight: 500;
+  color: var(--text);
+  text-align: left;
+  white-space: pre-wrap;
+  background: #fbfcfd;
+  border: 2px dashed var(--line);
+  border-radius: 16px;
+}
+
+.write-area.filled {
+  color: var(--text-strong);
+  border-style: solid;
+  border-color: var(--accent);
+}
+
+.dictation {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 24px 0;
+}
+
+.dictation .play {
+  width: 88px;
+  height: 88px;
+  padding: 0;
+  font-size: 34px;
+  border-radius: 50%;
+}
+
+.dictation-lines {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 18px;
+  justify-content: center;
+  min-height: 60px;
+  padding: 12px;
+  color: var(--text-strong);
+  background: none;
+  border-radius: 12px;
+}
+
+.dictation-lines:hover {
+  background: var(--accent-soft);
+}
+
+.dictation-lines .line {
+  display: inline-block;
+  padding: 0 4px 2px;
+  font-size: 24px;
+  border-bottom: 2px solid var(--text-strong);
+}
+
+.dictation-lines .line.extra {
+  border-bottom-color: var(--danger);
+}
+
+.marked {
+  font-size: 22px;
+  line-height: 1.8;
+}
+
+.word-ok {
+  color: var(--accent);
+}
+
+.word-bad {
+  color: var(--danger);
+  font-weight: 700;
+  text-decoration: underline wavy;
+}
+
+/* 手寫區 */
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 16px 16px calc(16px + env(safe-area-inset-bottom));
+  background: rgba(29, 35, 48, 0.35);
+}
+
+.sheet {
+  width: min(880px, 100%);
+  padding: 20px 24px;
+  background: var(--card);
+  border-radius: 20px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+}
+
+.sheet-context {
+  color: var(--text);
+  font-size: 18px;
+  white-space: pre-line;
+}
+
+.sheet-input {
+  display: block;
+  width: 100%;
+  min-height: 110px;
+  padding: 14px 20px;
+  font: inherit;
+  font-size: 34px;
+  color: var(--text-strong);
+  background: #fbfcfd;
+  border: 2px solid var(--accent);
+  border-radius: 16px;
+  outline: none;
+  resize: none;
+}
+
+textarea.sheet-input {
+  min-height: 160px;
+  font-size: 28px;
+  line-height: 1.4;
 }

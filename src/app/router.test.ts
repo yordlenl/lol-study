@@ -9,4 +9,13 @@ describe('網址與頁面', () => {
     expect(parseHash('#/words/sentences')).toEqual({ page: 'words', tab: 'sentence' });
     expect(parseHash('#/settings')).toEqual({ page: 'settings' });
   });
+
+  it('練習：類別 → 項目 → 模式', () => {
+    expect(parseHash('#/practice')).toEqual({ page: 'practice' });
+    expect(parseHash('#/practice/skills')).toEqual({ page: 'practice-items', category: 'skills' });
+    expect(parseHash('#/practice/skills/Ahri')).toEqual({ page: 'practice-modes', category: 'skills', id: 'Ahri' });
+    expect(parseHash('#/practice/quotes/random/dictation')).toEqual({ page: 'practice-session', category: 'quotes', id: 'random', mode: 'dictation' });
+    expect(parseHash('#/practice/nonsense')).toEqual({ page: 'practice' });
+    expect(parseHash('#/practice/skills/Ahri/bad')).toEqual({ page: 'practice-modes', category: 'skills', id: 'Ahri' });
+  });
 });

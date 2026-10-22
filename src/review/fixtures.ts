@@ -15,13 +15,13 @@ export function word(lemma: string, opts: { due?: Date; isNew?: boolean; addedAt
   };
 }
 
-export function sentence(en: string, opts: { due?: Date } = {}): SentenceCard {
+export function sentence(en: string, opts: { due?: Date; addedAt?: Date } = {}): SentenceCard {
   return {
     id: `sentence:spell:Ahri/Q:${en}`,
     kind: 'sentence',
     text: { en, zh_TW: '甲', zh_CN: '甲' },
     source: { type: 'spell', id: 'Ahri/Q' },
-    addedAt: new Date(2026, 9, 1).toISOString(),
+    addedAt: (opts.addedAt ?? new Date(2026, 9, 1)).toISOString(),
     origin: 'corpus',
     fsrs: { ...baseFsrs, due: (opts.due ?? new Date(2026, 9, 1)).toISOString(), state: opts.due ? 2 : 0 },
   };

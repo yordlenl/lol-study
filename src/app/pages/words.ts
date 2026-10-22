@@ -122,7 +122,6 @@ export class PageWords extends LightElement {
         <button type="button" class="secondary" @click=${this.exportAll}>匯出</button>
       </div>
       ${this.message ? html`<p class="notice ok">${this.message}</p>` : nothing}
-      ${this.tab === 'sentence' ? html`<p class="hint">句子卡的複習（挖空、看中寫英、聽寫）在第四階段開放。</p>` : nothing}
       ${list.length
         ? html`<ul class="card-list panel">
             ${list.map((c) => (c.kind === 'word' ? this.wordRow(c) : this.sentenceRow(c)))}
