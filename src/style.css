@@ -9,6 +9,28 @@
   --text-strong: #1d2330;
   --danger: #d6455d;
   color-scheme: light;
+
+  /* 給語料庫共用元件的顏色 */
+  --lol-text: #3d4450;
+  --lol-text-strong: #1d2330;
+  --lol-muted: #8a909b;
+  --lol-accent: #2b8a6e;
+  --lol-line: #d5d9e0;
+  --lol-en: #1d2330;
+  --lol-zh-tw: #3d4450;
+  --lol-zh-cn: #8a909b;
+  --lol-en-size: 1.15em;
+  --lol-row-gap: 6px;
+  --lol-word-hover: #e3f2ec;
+  --lol-button-text: #2b8a6e;
+  --lol-button-bg: #e3f2ec;
+  --lol-button-radius: 18px;
+  --lol-badge-radius: 9px;
+  --lol-popup-bg: #ffffff;
+  --lol-popup-text: #3d4450;
+  --lol-popup-strong: #1d2330;
+  --lol-popup-border: #e6e8ec;
+  --lol-popup-radius: 14px;
 }
 
 * {
@@ -30,12 +52,16 @@ body {
 }
 
 .page {
-  max-width: 760px;
+  max-width: 820px;
   margin: 0 auto;
-  padding: calc(32px + env(safe-area-inset-top)) 24px calc(32px + env(safe-area-inset-bottom));
+  padding: calc(28px + env(safe-area-inset-top)) 24px calc(32px + env(safe-area-inset-bottom));
 }
 
 .masthead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   margin-bottom: 24px;
 }
 
@@ -51,6 +77,15 @@ h1 {
   font-weight: 600;
 }
 
+.switch {
+  padding: 10px 18px;
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+  background: var(--accent-soft);
+  border-radius: 22px;
+}
+
 .panel {
   margin-bottom: 16px;
   padding: 20px 24px;
@@ -59,16 +94,17 @@ h1 {
   box-shadow: 0 1px 3px rgba(29, 35, 48, 0.08);
 }
 
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 h2 {
   margin: 0 0 8px;
   color: var(--text-strong);
   font-size: 20px;
-}
-
-h3 {
-  margin: 20px 0 8px;
-  color: var(--text-strong);
-  font-size: 16px;
 }
 
 p {
@@ -79,28 +115,8 @@ p {
   font-size: 15px;
 }
 
-.link {
-  color: var(--accent);
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.facts {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  gap: 4px 16px;
-  margin: 0 0 16px;
-}
-
-.facts dd {
-  margin: 0;
-  color: var(--text-strong);
-}
-
-.actions {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
+.error {
+  color: var(--danger);
 }
 
 button {
@@ -115,33 +131,14 @@ button {
   cursor: pointer;
 }
 
-button:active {
-  opacity: 0.85;
-}
-
 button.secondary {
   color: var(--accent);
   background: var(--accent-soft);
 }
 
-.marks {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.marks li {
-  padding: 8px 0;
-  color: var(--text-strong);
-  border-top: 1px solid var(--line);
-}
-
-.marks li.empty {
-  color: var(--text);
-}
-
-.marks li.error {
-  color: var(--danger);
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
 }
 
 .build {
