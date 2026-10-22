@@ -1,9 +1,10 @@
 {
+  "id": "/lol-study/",
   "name": "LoL 英語學習",
-  "short_name": "LoL 學習",
+  "short_name": "LoL 英語",
   "lang": "zh-Hant-TW",
-  "start_url": "./",
-  "scope": "./",
+  "start_url": "/lol-study/",
+  "scope": "/",
   "display": "standalone",
   "orientation": "landscape",
   "background_color": "#f6f7f9",
