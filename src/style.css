@@ -1,0 +1,152 @@
+/* 學習 App：簡潔淺色，像主流背單詞軟體 */
+:root {
+  --bg: #f6f7f9;
+  --card: #ffffff;
+  --accent: #2b8a6e;
+  --accent-soft: #e3f2ec;
+  --line: #e6e8ec;
+  --text: #5c6370;
+  --text-strong: #1d2330;
+  --danger: #d6455d;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang TC', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.page {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: calc(32px + env(safe-area-inset-top)) 24px calc(32px + env(safe-area-inset-bottom));
+}
+
+.masthead {
+  margin-bottom: 24px;
+}
+
+h1 {
+  margin: 0;
+  color: var(--text-strong);
+  font-size: 32px;
+}
+
+.tagline {
+  margin: 2px 0 0;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.panel {
+  margin-bottom: 16px;
+  padding: 20px 24px;
+  background: var(--card);
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(29, 35, 48, 0.08);
+}
+
+h2 {
+  margin: 0 0 8px;
+  color: var(--text-strong);
+  font-size: 20px;
+}
+
+h3 {
+  margin: 20px 0 8px;
+  color: var(--text-strong);
+  font-size: 16px;
+}
+
+p {
+  margin: 0 0 12px;
+}
+
+.hint {
+  font-size: 15px;
+}
+
+.link {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 16px;
+  margin: 0 0 16px;
+}
+
+.facts dd {
+  margin: 0;
+  color: var(--text-strong);
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+button {
+  min-height: 44px;
+  padding: 0 22px;
+  font: inherit;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent);
+  border: none;
+  border-radius: 22px;
+  cursor: pointer;
+}
+
+button:active {
+  opacity: 0.85;
+}
+
+button.secondary {
+  color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.marks {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.marks li {
+  padding: 8px 0;
+  color: var(--text-strong);
+  border-top: 1px solid var(--line);
+}
+
+.marks li.empty {
+  color: var(--text);
+}
+
+.marks li.error {
+  color: var(--danger);
+}
+
+.build {
+  margin-top: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: #9aa0aa;
+}
