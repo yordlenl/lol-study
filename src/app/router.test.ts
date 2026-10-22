@@ -1,0 +1,12 @@
+import { describe, expect, it } from 'vitest';
+import { parseHash } from './router.ts';
+
+describe('網址與頁面', () => {
+  it('解析各頁網址', () => {
+    expect(parseHash('')).toEqual({ page: 'home' });
+    expect(parseHash('#/review')).toEqual({ page: 'review' });
+    expect(parseHash('#/words')).toEqual({ page: 'words', tab: 'word' });
+    expect(parseHash('#/words/sentences')).toEqual({ page: 'words', tab: 'sentence' });
+    expect(parseHash('#/settings')).toEqual({ page: 'settings' });
+  });
+});
