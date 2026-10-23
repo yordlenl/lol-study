@@ -15,7 +15,7 @@ const question: Question = {
   text: { en: 'Hi there.', zh_TW: '嗨', zh_CN: '嗨' },
 };
 
-describe('練習結果進複習', () => {
+describe('練習與隨機挑戰的結果進複習', () => {
   it('答對不影響排程', async () => {
     const f = fakeShared();
     expect(await recordPractice(f.shared, question, { correct: true, hinted: false, wrongUnits: [] })).toBe(0);
@@ -27,7 +27,15 @@ describe('練習結果進複習', () => {
     const f = fakeShared();
     const unit = { text: question.text, alignment: 'sentence' as const };
     expect(await recordPractice(f.shared, question, { correct: false, hinted: true, wrongUnits: [unit] })).toBe(1);
-    expect(f.addSentence).toHaveBeenCalledWith({ unit, source: question.block.source, audio: 'https://wiki.leagueoflegends.com/a.mp3' });
+    expect(f.addSentence).toHaveBeenCalledWith({ unit, source: question.block.source, origin: 'practice', audio: 'https://wiki.leagueoflegends.com/a.mp3' });
     expect(f.recordReview).toHaveBeenCalledWith({ id: 'sentence:Hi there.' }, { rating: 1, mode: 'translate', hinted: true, source: 'practice' });
+  });
+
+  it('隨機挑戰答錯：卡片和紀錄都記成隨機挑戰', async () => {
+    const f = fakeShared();
+    const unit = { text: question.text, alignment: 'sentence' as const };
+    await recordPractice(f.shared, question, { correct: false, hinted: false, wrongUnits: [unit] }, 'challenge');
+    expect(f.addSentence.mock.calls[0][0]).toMatchObject({ origin: 'challenge' });
+    expect(f.recordReview).toHaveBeenCalledWith({ id: 'sentence:Hi there.' }, { rating: 1, mode: 'translate', hinted: false, source: 'challenge' });
   });
 });

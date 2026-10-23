@@ -18,4 +18,11 @@ describe('網址與頁面', () => {
     expect(parseHash('#/practice/nonsense')).toEqual({ page: 'practice' });
     expect(parseHash('#/practice/skills/Ahri/bad')).toEqual({ page: 'practice-modes', category: 'skills', id: 'Ahri' });
   });
+
+  it('隨機挑戰：開始畫面與作答', () => {
+    expect(parseHash('#/challenge')).toEqual({ page: 'challenge' });
+    expect(parseHash('#/challenge/en2zh/all')).toEqual({ page: 'challenge-run', direction: 'en2zh', scope: 'all' });
+    expect(parseHash('#/challenge/mixed/mine')).toEqual({ page: 'challenge-run', direction: 'mixed', scope: 'mine' });
+    expect(parseHash('#/challenge/bad/all')).toEqual({ page: 'challenge' });
+  });
 });

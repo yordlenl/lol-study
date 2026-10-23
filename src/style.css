@@ -776,3 +776,126 @@ textarea.sheet-input {
   font-size: 28px;
   line-height: 1.4;
 }
+
+/* ---------- 隨機挑戰 ---------- */
+
+.challenge-link {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 12px 0 20px;
+  color: inherit;
+  text-decoration: none;
+  background: var(--accent-soft);
+}
+
+.challenge-link:hover {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+.segmented {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 4px 0 8px;
+  padding: 4px;
+  background: var(--bg);
+  border-radius: 22px;
+}
+
+.segmented button {
+  color: var(--text);
+  background: transparent;
+}
+
+.segmented button.on {
+  color: #fff;
+  background: var(--accent);
+}
+
+.progress-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.progress-row .progress {
+  margin: 0;
+}
+
+.masked {
+  margin: 12px 0 16px;
+  color: var(--text-strong);
+  font-size: 26px;
+  line-height: 1.6;
+}
+
+.options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 14px;
+  min-height: 76px;
+  padding: 10px 16px;
+  color: var(--text-strong);
+  font-size: 19px;
+  text-align: left;
+  background: var(--bg);
+  border: 2px solid transparent;
+  border-radius: 16px;
+}
+
+.option img {
+  flex: none;
+  border-radius: 10px;
+}
+
+.option:disabled {
+  opacity: 1;
+}
+
+.option.right {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.option.wrong {
+  background: var(--danger-soft);
+  border-color: var(--danger);
+}
+
+.option.dim {
+  opacity: 0.5;
+}
+
+.confirm {
+  margin-top: 8px;
+  padding: 16px 20px;
+  background: var(--accent-soft);
+  border-radius: 16px;
+}
+
+.source-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  color: var(--text-strong);
+  font-weight: 600;
+}
+
+.source-line img {
+  border-radius: 8px;
+}
+
+.confirm button.secondary {
+  background: #fff;
+}

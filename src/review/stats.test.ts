@@ -31,8 +31,8 @@ describe('正確率與最常錯的詞', () => {
     expect(accuracy(logs, at(23, 22))).toEqual({ correct: 1, total: 3 });
   });
 
-  it('練習寫錯自動記的不算進正確率', () => {
-    const logs = [log('a', at(23, 10), 3), log('b', at(23, 11), 1, { source: 'practice' })];
+  it('練習、隨機挑戰寫錯自動記的不算進正確率', () => {
+    const logs = [log('a', at(23, 10), 3), log('b', at(23, 11), 1, { source: 'practice' }), log('c', at(23, 12), 1, { source: 'challenge' })];
     expect(accuracy(logs, at(23, 22))).toEqual({ correct: 1, total: 1 });
   });
 

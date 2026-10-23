@@ -1,4 +1,5 @@
 // 網址 #/review、#/practice/skills/Ahri/cloze 這類形式 ↔ 頁面。
+import type { Direction, Scope } from '../challenge/draw.ts';
 import type { CategoryId } from '../practice/catalog.ts';
 import type { Mode } from '../practice/types.ts';
 
@@ -10,10 +11,14 @@ export type Route =
   | { page: 'practice' }
   | { page: 'practice-items'; category: CategoryId }
   | { page: 'practice-modes'; category: CategoryId; id: string }
-  | { page: 'practice-session'; category: CategoryId; id: string; mode: Mode };
+  | { page: 'practice-session'; category: CategoryId; id: string; mode: Mode }
+  | { page: 'challenge' }
+  | { page: 'challenge-run'; direction: Direction; scope: Scope };
 
 const CATEGORY_IDS = new Set(['champions', 'skills', 'items', 'runes', 'summoners', 'quotes', 'mine']);
 const MODES = new Set(['cloze', 'translate', 'dictation']);
+const DIRECTIONS = new Set(['zh2en', 'en2zh', 'mixed']);
+const SCOPES = new Set(['all', 'mine']);
 
 export function parseHash(hash: string): Route {
   const [page, a, b, c] = hash
@@ -34,6 +39,10 @@ export function parseHash(hash: string): Route {
       if (!c || !MODES.has(c)) return { page: 'practice-modes', category, id: b };
       return { page: 'practice-session', category, id: b, mode: c as Mode };
     }
+    case 'challenge':
+      return a && b && DIRECTIONS.has(a) && SCOPES.has(b)
+        ? { page: 'challenge-run', direction: a as Direction, scope: b as Scope }
+        : { page: 'challenge' };
     default:
       return { page: 'home' };
   }

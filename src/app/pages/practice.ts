@@ -11,7 +11,11 @@ export class PagePractice extends LightElement {
   render() {
     return html`
       <h1>練習</h1>
-      <p class="hint">挑一個類別，再挑內容和練習方式。寫錯的句子會自動收進句子庫，明天複習。</p>
+      <a class="panel challenge-link" href="#/challenge">
+        <span class="category-name">隨機挑戰</span>
+        <span class="hint">系統抽題：中→英、英→中（看英文選出處）或混合，每輪 20 題</span>
+      </a>
+      <p class="hint">或挑一個類別，再挑內容和練習方式。寫錯的句子會自動收進句子庫，明天複習。</p>
       <div class="category-grid">
         ${CATEGORIES.map(
           (c) => html`<a class="panel category" href=${href('practice', c.id)}>

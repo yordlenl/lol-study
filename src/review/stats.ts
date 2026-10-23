@@ -15,11 +15,11 @@ export function streak(logs: ReviewLog[], now: Date): number {
   return count;
 }
 
-/** 正確率：近 N 天的複習裡，沒用提示就答對（Good 以上）的比例。練習寫錯自動記的不算。 */
+/** 正確率：近 N 天的複習裡，沒用提示就答對（Good 以上）的比例。練習、隨機挑戰寫錯自動記的不算。 */
 export function accuracy(logs: ReviewLog[], now: Date, days = 30): { correct: number; total: number } {
   const since = studyDayStart(now);
   since.setDate(since.getDate() - (days - 1));
-  const recent = logs.filter((l) => l.source !== 'practice' && new Date(l.reviewedAt) >= since);
+  const recent = logs.filter((l) => (!l.source || l.source === 'review') && new Date(l.reviewedAt) >= since);
   return { correct: recent.filter((l) => l.rating >= 3 && !l.hinted).length, total: recent.length };
 }
 

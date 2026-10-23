@@ -1,6 +1,7 @@
 // <study-app>：上方導覽列與目前頁面。
 import { html } from 'lit';
 import { LightElement } from './light.ts';
+import './pages/challenge.ts';
 import './pages/home.ts';
 import './pages/practice-session.ts';
 import './pages/practice.ts';
@@ -11,7 +12,7 @@ import { parseHash, type Route } from './router.ts';
 
 const NAV: Array<{ page: Route['page']; label: string; href: string; also?: Array<Route['page']> }> = [
   { page: 'home', label: '首頁', href: '#/', also: ['review'] },
-  { page: 'practice', label: '練習', href: '#/practice', also: ['practice-items', 'practice-modes', 'practice-session'] },
+  { page: 'practice', label: '練習', href: '#/practice', also: ['practice-items', 'practice-modes', 'practice-session', 'challenge', 'challenge-run'] },
   { page: 'words', label: '生詞本', href: '#/words' },
   { page: 'settings', label: '設定', href: '#/settings' },
 ];
@@ -57,6 +58,10 @@ export class StudyApp extends LightElement {
         return html`<page-practice-items .category=${r.category}></page-practice-items>`;
       case 'practice-modes':
         return html`<page-practice-modes .category=${r.category} .itemId=${r.id}></page-practice-modes>`;
+      case 'challenge':
+        return html`<page-challenge></page-challenge>`;
+      case 'challenge-run':
+        return html`<page-challenge-run .direction=${r.direction} .scope=${r.scope}></page-challenge-run>`;
       case 'practice-session':
         return html`<page-practice-session .category=${r.category} .itemId=${r.id} .mode=${r.mode}></page-practice-session>`;
     }
