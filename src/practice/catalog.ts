@@ -19,10 +19,9 @@ export const categoryLabel = (id: CategoryId) => CATEGORIES.find((c) => c.id ===
 export const RANDOM_QUOTES = 'random';
 const RANDOM_QUOTE_COUNT = 10;
 
+/** 和語料庫的裝備商店一樣分四區 */
 export const TIER_LABELS: Array<[ItemTier, string]> = [
   ['starter', '起始'],
-  ['consumable', '消耗品與飾品'],
-  ['boots', '鞋子'],
   ['basic', '基礎'],
   ['epic', '中間件'],
   ['legendary', '傳說'],
