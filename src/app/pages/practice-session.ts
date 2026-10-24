@@ -88,7 +88,7 @@ export class PagePracticeSession extends LightElement {
   }
 
   render() {
-    const back = html`<a class="back" href=${href('practice', this.category, this.itemId)}>← ${categoryLabel(this.category)}・${MODE_LABELS[this.mode]}</a>`;
+    const back = html`<a class="back" href=${href('practice', this.category, this.mode)}>← ${categoryLabel(this.category)}・${MODE_LABELS[this.mode]}</a>`;
     if (!this.questions) return html`${back}<p class="notice">準備題目中…</p>`;
     const q = this.questions[this.index];
     if (!q) {
@@ -97,8 +97,8 @@ export class PagePracticeSession extends LightElement {
         ${this.tally.total ? html`<p>答對 ${this.tally.correct} / ${this.tally.total} 題。</p>` : nothing}
         ${this.tally.added ? html`<p class="hint">寫錯的 ${this.tally.added} 句已收進句子庫，明天複習。</p>` : nothing}
         <div class="actions">
-          <a class="button" href=${href('practice', this.category, this.itemId)}>再練一次</a>
-          <a class="button secondary" href="#/practice">換別的</a>
+          <a class="button" href=${href('practice', this.category, this.mode, this.itemId)} @click=${() => this.load()}>再練一次</a>
+          <a class="button secondary" href=${href('practice', this.category, this.mode)}>換別的</a>
         </div>
       </section>`;
     }

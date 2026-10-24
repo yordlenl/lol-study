@@ -6,3 +6,9 @@ export function sharedModuleUrl(env: { DEV: boolean; VITE_SHARED_URL?: string } 
   if (env.VITE_SHARED_URL) return env.VITE_SHARED_URL;
   return env.DEV ? PUBLISHED_SHARED_URL : '/lol-corpus/shared/lol-shared.js';
 }
+
+/** 遊戲客戶端首頁（語料庫首頁）的網址：從主畫面打開 App 時先到這裡，右上角關閉鈕也回這裡 */
+export function corpusHomeUrl(env: { DEV: boolean; VITE_SHARED_URL?: string } = import.meta.env): string {
+  if (env.VITE_SHARED_URL) return new URL('/lol-corpus/', env.VITE_SHARED_URL).href;
+  return env.DEV ? new URL('/lol-corpus/', PUBLISHED_SHARED_URL).href : '/lol-corpus/';
+}

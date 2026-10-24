@@ -1,5 +1,4 @@
-// 隨機挑戰抽題：系統抽，使用者不能挑。
-// 全部內容：英雄、裝備、符文、召喚師技能四類輪流平均；只從生詞本與收藏：句子卡＋單字卡收藏時所在的那一句。
+// 隨機挑戰抽題：系統抽，使用者不能挑。只從選定的類別抽（例如選「英雄」就只出稱號和台詞）。
 import type {
   Alignment,
   Item,
@@ -11,13 +10,12 @@ import type {
   SummonerSpell,
   Tri,
 } from '../lol-shared-types.ts';
+import type { CategoryId } from '../practice/catalog.ts';
 import type { Question } from '../practice/types.ts';
 
 export type Direction = 'zh2en' | 'en2zh' | 'mixed';
-export type Scope = 'all' | 'mine';
 
 export const DIRECTION_LABELS: Record<Direction, string> = { zh2en: '中→英', en2zh: '英→中', mixed: '混合' };
-export const SCOPE_LABELS: Record<Scope, string> = { all: '全部內容', mine: '只從生詞本與收藏' };
 export const ROUND_SIZE = 20;
 
 /** 抽到的一句 */
@@ -32,21 +30,10 @@ export type ChallengeItem =
   | { direction: 'zh2en'; drawn: Drawn; question: Question }
   | { direction: 'en2zh'; drawn: Drawn; recognition: RecognitionQuestion };
 
-type Category = 'champion' | 'item' | 'rune' | 'summoner';
-const CATEGORIES: Category[] = ['champion', 'item', 'rune', 'summoner'];
 
 const plain = (r: Rich) => (typeof r === 'string' ? r : r.map((x) => (typeof x === 'string' ? x : x[0])).join(''));
 const pick = <T>(list: T[], random: () => number): T | undefined => list[Math.floor(random() * list.length)];
 const keyOf = (d: Drawn) => `${d.source.type}:${d.source.id}:${d.text.en}`;
-
-function shuffle<T>(list: T[], random: () => number): T[] {
-  const a = [...list];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
 
 /**
  * 適合當挑戰題的句子：排除數值行，例如「100% Base Mana Regen」（數字開頭）、
@@ -57,18 +44,16 @@ export function isChallengeSentence(en: string): boolean {
 }
 
 /** 從某一類抽一句（數值行、非語言聲音、虛構語言不出題） */
-async function drawFrom(shared: SharedModule, category: Category, random: () => number): Promise<Drawn | null> {
+async function drawFrom(shared: SharedModule, category: CategoryId, random: () => number): Promise<Drawn | null> {
   const units = (text: Tri<Rich>) => shared.sentenceUnits(text).filter((u) => isChallengeSentence(u.text.en));
   switch (category) {
-    case 'champion': {
+    case 'champions': {
+      // 英雄：稱號和選用／禁用台詞
       const summary = pick(await shared.loadChampionIndex(), random);
       if (!summary) return null;
       const c = await shared.loadChampion(summary.id);
       const pool: Drawn[] = [
-        ...units(c.passive.description).map((u) => ({ ...u, source: { type: 'passive' as const, id: c.id, label: c.passive.name } })),
-        ...c.spells.flatMap((sp) =>
-          units(sp.description).map((u) => ({ ...u, source: { type: 'spell' as const, id: `${c.id}/${sp.slot}`, label: sp.name } })),
-        ),
+        { text: c.title, alignment: 'sentence' as const, source: { type: 'champion' as const, id: c.id, label: c.name } },
         ...c.quotes
           .filter((q) => !q.nonverbal && !q.fictionalLanguage)
           .map((q) => ({
@@ -80,46 +65,37 @@ async function drawFrom(shared: SharedModule, category: Category, random: () => 
       ];
       return pick(pool, random) ?? null;
     }
-    case 'item': {
+    case 'skills': {
+      const summary = pick(await shared.loadChampionIndex(), random);
+      if (!summary) return null;
+      const c = await shared.loadChampion(summary.id);
+      const pool: Drawn[] = [
+        ...units(c.passive.description).map((u) => ({ ...u, source: { type: 'passive' as const, id: c.id, label: c.passive.name } })),
+        ...c.spells.flatMap((sp) =>
+          units(sp.description).map((u) => ({ ...u, source: { type: 'spell' as const, id: `${c.id}/${sp.slot}`, label: sp.name } })),
+        ),
+      ];
+      return pick(pool, random) ?? null;
+    }
+    case 'items': {
       const item: Item | undefined = pick(await shared.loadItems(), random);
       if (!item) return null;
       const source = { type: 'item' as const, id: item.id, label: item.name };
       return pick([...units(item.plaintext), ...units(item.description)].map((u) => ({ ...u, source })), random) ?? null;
     }
-    case 'rune': {
+    case 'runes': {
       const rune: Rune | undefined = pick((await shared.loadRunes()).trees.flatMap((t) => t.slots.flat()), random);
       if (!rune) return null;
       const source = { type: 'rune' as const, id: String(rune.id), label: rune.name };
       return pick(units(rune.long).map((u) => ({ ...u, source })), random) ?? null;
     }
-    case 'summoner': {
+    case 'summoners': {
       const s: SummonerSpell | undefined = pick(await shared.loadSummoners(), random);
       if (!s) return null;
       const source = { type: 'summoner' as const, id: s.id, label: s.name };
       return pick(units(s.description).map((u) => ({ ...u, source })), random) ?? null;
     }
   }
-}
-
-/** 生詞本與收藏裡可以出題的句子 */
-export async function collectedSentences(shared: SharedModule): Promise<Drawn[]> {
-  const cards = await shared.learningStore().listCards();
-  const out = new Map<string, Drawn>();
-  for (const card of cards) {
-    if (card.kind === 'sentence') {
-      const d: Drawn = { text: card.text, alignment: card.alignment ?? 'sentence', source: card.source, ...(card.audio ? { audio: card.audio } : {}) };
-      out.set(keyOf(d), d);
-    } else if (card.context) {
-      // 單字卡：找出收藏時所在的那一句
-      const word = new RegExp(`(?<![A-Za-z])${card.word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![A-Za-z])`, 'i');
-      const unit = shared.sentenceUnits(card.context.text).find((u) => word.test(u.text.en));
-      if (unit) {
-        const d: Drawn = { ...unit, source: card.context.source };
-        out.set(keyOf(d), d);
-      }
-    }
-  }
-  return [...out.values()];
 }
 
 /** 中→英：隨機用挖空或看中寫英；中文只對到整段的只出挖空 */
@@ -154,38 +130,23 @@ async function toItem(shared: SharedModule, d: Drawn, direction: Direction, rand
   return zh2en(shared, d, random);
 }
 
-/** 抽一輪題目。回傳的 available 是這個範圍最多能出幾題 */
+/** 從選定的類別抽一輪題目（同一句不重複） */
 export async function drawRound(
   shared: SharedModule,
   direction: Direction,
-  scope: Scope,
+  category: CategoryId,
   count = ROUND_SIZE,
   random: () => number = Math.random,
-): Promise<{ items: ChallengeItem[]; available: number }> {
+): Promise<ChallengeItem[]> {
   const items: ChallengeItem[] = [];
   const used = new Set<string>();
-
-  if (scope === 'mine') {
-    const pool = shuffle(await collectedSentences(shared), random);
-    for (const d of pool) {
-      if (items.length >= count) break;
-      const item = await toItem(shared, d, direction, random);
-      if (item) items.push(item);
-    }
-    return { items, available: items.length };
-  }
-
-  let cycle: Category[] = [];
   for (let attempts = 0; items.length < count && attempts < count * 10; attempts++) {
-    if (!cycle.length) cycle = shuffle(CATEGORIES, random);
-    const category = cycle[0];
     const d = await drawFrom(shared, category, random);
     if (!d || used.has(keyOf(d))) continue;
     const item = await toItem(shared, d, direction, random);
     if (!item) continue;
     used.add(keyOf(d));
     items.push(item);
-    cycle.shift();
   }
-  return { items, available: count };
+  return items;
 }

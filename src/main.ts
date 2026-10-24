@@ -1,7 +1,8 @@
 import { registerSW } from 'virtual:pwa-register';
 import './style.css';
 import './app/app.ts';
-import { sharedModuleUrl } from './corpus.ts';
+import { opensClientHome } from './app/router.ts';
+import { corpusHomeUrl, sharedModuleUrl } from './corpus.ts';
 import { loadShared } from './shared.ts';
 
 const root = document.querySelector<HTMLDivElement>('#app')!;
@@ -10,6 +11,11 @@ const root = document.querySelector<HTMLDivElement>('#app')!;
 registerSW({ immediate: true });
 
 async function start() {
+  // 從主畫面打開 App 時先到遊戲客戶端的首頁；從「開始」進來（#/home）就留在學習
+  if (opensClientHome(location.hash)) {
+    location.replace(corpusHomeUrl());
+    return;
+  }
   const shared = await loadShared(sharedModuleUrl());
   await shared.initShared();
   root.replaceChildren(document.createElement('study-app'));

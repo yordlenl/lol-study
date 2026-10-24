@@ -1,5 +1,7 @@
-// <study-app>：上方導覽列與目前頁面。
+// <study-app>：像遊戲客戶端。上方是和語料庫共用的導覽列（「開始」亮起），
+// 下面一排分頁照「玩家 vs 玩家」那一排：主頁、練習、生詞本、設定。
 import { html } from 'lit';
+import { corpusHomeUrl } from '../corpus.ts';
 import { LightElement } from './light.ts';
 import './pages/challenge.ts';
 import './pages/home.ts';
@@ -10,11 +12,11 @@ import './pages/settings.ts';
 import './pages/words.ts';
 import { parseHash, type Route } from './router.ts';
 
-const NAV: Array<{ page: Route['page']; label: string; href: string; also?: Array<Route['page']> }> = [
-  { page: 'home', label: '首頁', href: '#/', also: ['review'] },
-  { page: 'practice', label: '練習', href: '#/practice', also: ['practice-items', 'practice-modes', 'practice-session', 'challenge', 'challenge-run'] },
-  { page: 'words', label: '生詞本', href: '#/words' },
-  { page: 'settings', label: '設定', href: '#/settings' },
+const TABS: Array<{ label: string; href: string; pages: Array<Route['page']> }> = [
+  { label: '主頁', href: '#/home', pages: ['home', 'review'] },
+  { label: '練習', href: '#/practice', pages: ['practice', 'practice-pick', 'practice-session', 'challenge-setup', 'challenge-run'] },
+  { label: '生詞本', href: '#/words', pages: ['words'] },
+  { label: '設定', href: '#/settings', pages: ['settings'] },
 ];
 
 export class StudyApp extends LightElement {
@@ -53,30 +55,24 @@ export class StudyApp extends LightElement {
       case 'settings':
         return html`<page-settings></page-settings>`;
       case 'practice':
-        return html`<page-practice></page-practice>`;
-      case 'practice-items':
-        return html`<page-practice-items .category=${r.category}></page-practice-items>`;
-      case 'practice-modes':
-        return html`<page-practice-modes .category=${r.category} .itemId=${r.id}></page-practice-modes>`;
-      case 'challenge':
-        return html`<page-challenge></page-challenge>`;
-      case 'challenge-run':
-        return html`<page-challenge-run .direction=${r.direction} .scope=${r.scope}></page-challenge-run>`;
+        return html`<page-practice .initialCategory=${r.category}></page-practice>`;
+      case 'practice-pick':
+        return html`<page-practice-pick .category=${r.category} .mode=${r.mode}></page-practice-pick>`;
       case 'practice-session':
         return html`<page-practice-session .category=${r.category} .itemId=${r.id} .mode=${r.mode}></page-practice-session>`;
+      case 'challenge-setup':
+        return html`<page-challenge .category=${r.category}></page-challenge>`;
+      case 'challenge-run':
+        return html`<page-challenge-run .category=${r.category} .direction=${r.direction}></page-challenge-run>`;
     }
   }
 
   render() {
+    const page = this.route.page;
     return html`
-      <header class="topbar">
-        <a class="brand" href="#/">LoL 英語</a>
-        <nav class="nav">
-          ${NAV.map((n) => html`<a href=${n.href} class=${this.route.page === n.page || n.also?.includes(this.route.page) ? 'current' : ''}>${n.label}</a>`)}
-        </nav>
-        <a class="switch" href="/lol-corpus/">語料庫 →</a>
-      </header>
-      <main class="page">${this.page()}</main>
+      <lol-client-nav current="play" play-href="#/home"></lol-client-nav>
+      <lol-client-tabs .tabs=${TABS.map((t) => ({ label: t.label, href: t.href, on: t.pages.includes(page) }))} close-href=${corpusHomeUrl()}></lol-client-tabs>
+      <main class="page" data-page=${page}>${this.page()}</main>
       <footer class="build">網站版本 ${__APP_VERSION__}・${__COMMIT__}</footer>
     `;
   }
