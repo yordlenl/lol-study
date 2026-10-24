@@ -1,6 +1,7 @@
 // 練習分頁，照遊戲「開始」畫面（玩家 vs 玩家）：上方五個大圖示選類別，下面菱形選項選題型，按「確認」。
 // 確認之後（<page-practice-pick>）照收藏頁的樣子選要練哪一個。
 import { html, nothing } from 'lit';
+import { keyed } from 'lit/directives/keyed.js';
 import type { Rune, RuneData, SummonerSpell } from '../../lol-shared-types.ts';
 import {
   CATEGORIES,
@@ -32,6 +33,9 @@ export const confirmHref = (category: CategoryId, choice: PracticeChoice) =>
 
 const modeIcon = (category: CategoryId, state: 'default' | 'hover' | 'active') => shared().corpusUrl(`img/client/ui/mode-${category}-${state}.png`);
 
+/** 背景用遊戲「開始」畫面的官方模式背景：裝備對隨機單中，其他沒有對應背景的用召喚峽谷（山景） */
+export const modeBackground = (category: CategoryId) => `img/client/ui/mode-bg-${category === 'items' ? 'aram' : 'classic'}.jpg`;
+
 /** 收藏頁的英雄直式卡片圖（連網載入） */
 const championLoading = (id: string) => `https://ddragon.leagueoflegends.com/cdn/img/champion/loading/${id}_0.jpg`;
 
@@ -56,42 +60,47 @@ export class PagePractice extends LightElement {
 
   render() {
     const current = CATEGORIES.find((c) => c.id === this.category)!;
+    const index = CATEGORIES.indexOf(current);
+    const bg = shared().corpusUrl(modeBackground(this.category));
     return html`<div class="play-select">
-      <div class="mode-tiles" role="radiogroup" aria-label="類別">
+      ${keyed(bg, html`<div class="mode-bg" style="background-image:url(${bg})" aria-hidden="true"></div>`)}
+      <div class="mode-grid" role="radiogroup" aria-label="類別">
         ${CATEGORIES.map(
-          (c, i) => html`${i === CATEGORIES.length - 1 ? html`<span class="mode-divider" aria-hidden="true"></span>` : nothing}
-            <button
-              type="button"
-              role="radio"
-              class="mode-tile ${c.id === this.category ? 'on' : ''}"
-              aria-checked=${c.id === this.category}
-              style="--icon:url(${modeIcon(c.id, 'default')});--icon-hover:url(${modeIcon(c.id, 'hover')});--icon-active:url(${modeIcon(c.id, 'active')})"
-              @click=${() => (this.category = c.id)}
-            >
-              <span class="mode-icon" aria-hidden="true"></span>
-              <span class="mode-en" lang="en">${c.en}</span>
-              <span class="mode-name">${c.label}</span>
-            </button>`,
+          (c, i) => html`<button
+            type="button"
+            role="radio"
+            class="mode-tile ${c.id === this.category ? 'on' : ''} ${i === CATEGORIES.length - 1 ? 'separated' : ''}"
+            aria-checked=${c.id === this.category}
+            style="--icon:url(${modeIcon(c.id, 'default')});--icon-hover:url(${modeIcon(c.id, 'hover')});--icon-active:url(${modeIcon(c.id, 'active')})"
+            @click=${() => (this.category = c.id)}
+          >
+            <span class="mode-icon" aria-hidden="true"></span>
+            <span class="mode-en" lang="en">${c.en}</span>
+            <span class="mode-name">${c.label}</span>
+            <span class="mode-glow" aria-hidden="true"></span>
+          </button>`,
         )}
-      </div>
-      <div class="mode-detail">
-        <p class="mode-description">${current.hint}</p>
-        <div class="mode-options" role="radiogroup" aria-label="題型">
-          ${CHOICES.map((c) => {
-            const ok = modeAvailable(this.category, c.id);
-            return html`<button
-              type="button"
-              role="radio"
-              class="mode-option ${c.id === this.choice ? 'on' : ''}"
-              aria-checked=${c.id === this.choice}
-              ?disabled=${!ok}
-              @click=${() => (this.choice = c.id)}
-            >
-              <span class="diamond" aria-hidden="true"></span>
-              <span class="option-label">${c.label}</span>
-              <span class="option-note">${ok ? c.note : '只有台詞有遊戲原聲，這個類別不能聽寫'}</span>
-            </button>`;
-          })}
+        <div class="mode-rule" aria-hidden="true"></div>
+        <!-- 說明和題型出現在選中那一格的正下方，和遊戲一樣 -->
+        <div class="mode-detail" data-column=${index} style="grid-column:${index + 1}">
+          <p class="mode-description">${current.hint}</p>
+          <div class="mode-options" role="radiogroup" aria-label="題型">
+            ${CHOICES.map((c) => {
+              const ok = modeAvailable(this.category, c.id);
+              return html`<button
+                type="button"
+                role="radio"
+                class="mode-option ${c.id === this.choice ? 'on' : ''}"
+                aria-checked=${c.id === this.choice}
+                ?disabled=${!ok}
+                @click=${() => (this.choice = c.id)}
+              >
+                <span class="radio-icon" aria-hidden="true"></span>
+                <span class="option-label">${c.label}</span>
+                <span class="option-note">${ok ? c.note : '只有台詞有遊戲原聲，這個類別不能聽寫'}</span>
+              </button>`;
+            })}
+          </div>
         </div>
       </div>
       <div class="confirm-bar">

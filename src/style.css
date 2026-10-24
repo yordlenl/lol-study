@@ -99,16 +99,20 @@ a {
   opacity: 0.7;
 }
 
+/* 標題：照客戶端的標題字（#f0e6d2、粗體、字距 0.05em，帶一點陰影） */
 h1 {
   margin: 0 0 4px;
   color: var(--text-strong);
   font-size: 26px;
+  letter-spacing: 0.05em;
+  text-shadow: 0 1px 2px rgba(1, 10, 19, 0.5);
 }
 
 h2 {
   margin: 0 0 8px;
-  color: var(--text-strong);
+  color: #cdbe91;
   font-size: 18px;
+  letter-spacing: 0.05em;
 }
 
 p {
@@ -784,6 +788,8 @@ textarea.sheet-input {
 .segmented button {
   color: var(--text);
   background: transparent;
+  border: 0;
+  border-image: none;
 }
 
 .segmented button.on {
@@ -879,7 +885,7 @@ textarea.sheet-input {
   background: #1e2328;
 }
 
-/* ---------- 練習分頁：照遊戲「開始」畫面（玩家 vs 玩家） ---------- */
+/* ---------- 練習分頁：照遊戲「開始」畫面（玩家 vs 玩家），數值取自客戶端 rcp-fe-lol-parties 樣式檔 ---------- */
 
 .page[data-page='practice'] {
   max-width: none;
@@ -887,35 +893,59 @@ textarea.sheet-input {
 }
 
 .play-select {
+  position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   min-height: calc(100dvh - 64px - 52px - env(safe-area-inset-top));
-  background: radial-gradient(ellipse at 50% 60%, rgba(10, 200, 185, 0.08), transparent 55%);
+  overflow: hidden;
 }
 
-.mode-tiles {
-  display: flex;
-  justify-content: space-evenly;
-  align-items: stretch;
-  padding: 18px 20px 16px;
-  border-bottom: 1px solid rgba(200, 170, 110, 0.35);
+/* 背景：官方模式背景圖（客戶端是 80% 不透明），換類別時淡入 */
+.mode-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: center top / cover no-repeat;
+  opacity: 0.8;
+  animation: mode-bg-in 0.8s cubic-bezier(0, 0, 0, 1);
 }
 
-.mode-divider {
-  width: 1px;
-  background: rgba(200, 170, 110, 0.35);
+.mode-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(1, 10, 19, 0.55), rgba(1, 10, 19, 0.2) 40%, rgba(1, 10, 19, 0.75));
 }
 
+@keyframes mode-bg-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.mode-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-rows: auto auto 1fr;
+  flex: 1;
+  padding: 10px 20px 0;
+}
+
+/* 一格：客戶端 185 寬、上半部 230 高；圖示框 105、圖示 95 */
 .mode-tile {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  min-width: 180px;
-  padding: 0;
-  color: #cdbe91;
+  justify-self: center;
+  width: 185px;
+  height: 230px;
+  padding: 15px 0 0;
+  color: #f0e6d2;
   background: none;
   border: 0;
+  border-radius: 0;
   cursor: pointer;
 }
 
@@ -923,11 +953,23 @@ textarea.sheet-input {
   border-image: none;
 }
 
-/* 圖示：遊戲的模式圖示，一般／滑過／選中三種狀態 */
+/* 最後一格（召喚師技能）前面的直線：1px、35% 透明 */
+.mode-tile.separated::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: calc(-1 * (100% - 185px) / 2 - 20px);
+  width: 1px;
+  height: 226px;
+  background: #f0e6d2;
+  opacity: 0.35;
+}
+
 .mode-icon {
-  width: 96px;
-  height: 96px;
-  background: var(--icon) center / contain no-repeat;
+  width: 105px;
+  height: 105px;
+  margin-bottom: 15px;
+  background: var(--icon) center / 95px no-repeat;
 }
 
 .mode-tile:hover .mode-icon {
@@ -938,53 +980,94 @@ textarea.sheet-input {
   background-image: var(--icon-active);
 }
 
+/* 上面那行小字：14px 粗體、字距 0.0375em */
 .mode-en {
-  margin-top: 10px;
-  color: #a09b8c;
-  font-size: 13px;
+  color: #f0e6d2;
+  font-size: 14px;
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.0375em;
+  line-height: 18px;
   text-transform: uppercase;
+  text-shadow: 0 1px 2px rgba(1, 10, 19, 0.5);
 }
 
+/* 名稱：24px 粗體、字距 0.05em */
 .mode-name {
-  color: #cdbe91;
-  font-size: 30px;
+  color: #f0e6d2;
+  font-size: 24px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.05em;
+  line-height: 28px;
+  text-shadow: 0 1px 2px rgba(1, 10, 19, 0.5);
 }
 
-.mode-tile.on .mode-name,
-.mode-tile.on .mode-en {
-  color: #f0e6d2;
+/* 選中：底部一條中間亮、兩邊淡的白線，下面一團白光 */
+.mode-tile.on {
+  border-bottom: 1px solid;
+  border-image: linear-gradient(90deg, hsla(0, 0%, 100%, 0) 0, hsla(0, 0%, 100%, 0.5) 20%, #fff 50%, hsla(0, 0%, 100%, 0.5) 80%, hsla(0, 0%, 100%, 0)) 1;
 }
 
+.mode-glow {
+  position: absolute;
+  left: -40px;
+  right: -40px;
+  bottom: 0;
+  height: 150px;
+  pointer-events: none;
+  opacity: 0;
+  background-image: radial-gradient(50% 40% at bottom center, hsla(0, 0%, 100%, 0.4) 0, hsla(0, 0%, 100%, 0.3) 30%, hsla(0, 0%, 100%, 0.05) 80%, hsla(0, 0%, 100%, 0.01) 90%, hsla(0, 0%, 100%, 0) 100%);
+  transition: opacity 0.3s;
+}
+
+.mode-tile.on .mode-glow {
+  opacity: 0.7;
+}
+
+.mode-rule {
+  grid-column: 1 / -1;
+  height: 1px;
+  background: rgba(240, 230, 210, 0.35);
+}
+
+/* 說明和題型：在選中那一格的正下方 */
 .mode-detail {
-  flex: 1;
-  width: min(420px, 100%);
-  margin: 0 auto;
-  padding: 18px 0 8px;
+  grid-row: 3;
+  justify-self: center;
+  width: 330px;
+  padding: 0 0 8px;
+  animation: mode-bg-in 0.3s ease;
 }
 
+.mode-detail[data-column='0'] {
+  justify-self: start;
+}
+
+.mode-detail[data-column='4'] {
+  justify-self: end;
+}
+
+/* 說明文字：14px、選中時白金色、上下 15px */
 .mode-description {
-  margin-bottom: 12px;
-  padding-bottom: 12px;
+  margin: 15px 0;
+  padding-bottom: 14px;
   color: #f0e6d2;
-  font-size: 17px;
-  border-bottom: 1px solid rgba(200, 170, 110, 0.35);
+  font-size: 14px;
+  letter-spacing: 0.025em;
+  line-height: 20px;
+  border-bottom: 1px solid rgba(240, 230, 210, 0.35);
 }
 
 .mode-options {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
 }
 
-/* 菱形選項：照客戶端的佇列選項（空心菱形、選中變實心） */
+/* 菱形選項：客戶端的菱形圖（20px，一張圖六種狀態），字 14px 粗體 */
 .mode-option {
   display: grid;
-  grid-template-columns: 22px 1fr;
-  column-gap: 12px;
+  grid-template-columns: 20px 1fr;
+  column-gap: 8px;
   align-items: center;
   justify-content: start;
   min-height: 44px;
@@ -993,6 +1076,8 @@ textarea.sheet-input {
   color: #cdbe91;
   background: none;
   border: 0;
+  border-radius: 0;
+  transition: color 0.3s ease;
 }
 
 .mode-option:hover {
@@ -1000,23 +1085,39 @@ textarea.sheet-input {
   border-image: none;
 }
 
-.mode-option .diamond {
+.radio-icon {
   grid-row: span 2;
-  width: 14px;
-  height: 14px;
-  margin-left: 4px;
-  transform: rotate(45deg);
-  border: 2px solid #c8aa6e;
+  width: 20px;
+  height: 20px;
+  background: var(--radio) 0 0 / 100% no-repeat;
 }
 
-.mode-option.on .diamond {
-  background: radial-gradient(circle, #f0e6d2 0 3px, #c8aa6e 4px 5px, #010a13 6px);
+.mode-option:hover .radio-icon {
+  background-position: 0 -20px;
+}
+
+.mode-option:active .radio-icon {
+  background-position: 0 -40px;
+}
+
+.mode-option:disabled .radio-icon {
+  background-position: 0 -60px;
+}
+
+.mode-option.on .radio-icon {
+  background-position: 0 -80px;
+}
+
+.mode-option.on:hover .radio-icon {
+  background-position: 0 -100px;
 }
 
 .option-label {
-  font-size: 19px;
+  font-size: 15px;
   font-weight: 700;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.075em;
+  line-height: 18px;
+  text-shadow: 0 1px 2px rgba(1, 10, 19, 0.5);
 }
 
 .mode-option.on .option-label {
@@ -1025,16 +1126,25 @@ textarea.sheet-input {
 
 .option-note {
   color: #a09b8c;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 16px;
 }
 
-.mode-option:disabled .option-label,
-.mode-option:disabled .diamond {
-  opacity: 0.35;
+.mode-option:disabled {
+  color: #5c5b57;
+}
+
+.mode-option:disabled .option-label {
+  color: #5c5b57;
 }
 
 /* 最下面的「確認」：左邊圓形 ✕，右邊深色長鈕，照截圖 */
+.play-select {
+  --radio: url('/lol-corpus/img/client/ui/radio.png');
+}
+
 .confirm-bar {
   display: flex;
   justify-content: center;
