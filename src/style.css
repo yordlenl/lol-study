@@ -366,6 +366,16 @@ button:disabled {
   font-weight: 500;
 }
 
+/* 念單字的喇叭（共用元件 lol-speak-button） */
+.solution lol-speak-button,
+.card-title lol-speak-button {
+  margin-left: 8px;
+}
+
+.card-title lol-speak-button {
+  margin-top: -4px;
+}
+
 .done {
   text-align: center;
 }
@@ -790,6 +800,21 @@ textarea.sheet-input {
   background: transparent;
   border: 0;
   border-image: none;
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.setting-label {
+  min-width: 3em;
+  color: var(--text-strong);
+}
+
+.setting-row .segmented {
+  margin: 4px 0;
 }
 
 .segmented button.on {

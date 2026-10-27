@@ -172,7 +172,10 @@ export class PageReview extends LightElement {
         ${question}
         <div class="result ${r.correct ? 'ok' : 'bad'}">
           <p class="verdict">${r.correct ? (r.rating === 2 ? '答對了（用了提示）' : '答對了') : '答錯了'}</p>
-          <p class="solution" lang="en">${card.lemma}${entry?.p ? html` <span class="phonetic">/${entry.p}/</span>` : nothing}</p>
+          <p class="solution" lang="en">
+            ${card.lemma}${entry?.p ? html` <span class="phonetic">/${entry.p}/</span>` : nothing}
+            <lol-speak-button .word=${card.lemma}></lol-speak-button>
+          </p>
           ${card.word !== card.lemma ? html`<p class="hint">收藏時的字形：${card.word}（也算對）</p>` : nothing}
           <p class="hint">你寫的：<span lang="en">${r.answer}</span></p>
           <p class="hint">下次複習：${describeDue(r.nextDue, new Date())}</p>

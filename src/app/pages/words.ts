@@ -79,7 +79,7 @@ export class PageWords extends LightElement {
     const def = this.definitions.get(card.lemma);
     return html`<li class="card-row">
       <div class="card-main">
-        <div class="card-title" lang="en">${card.lemma}${card.word !== card.lemma ? html`<span class="hint">（${card.word}）</span>` : nothing}</div>
+        <div class="card-title" lang="en">${card.lemma}<lol-speak-button .word=${card.lemma}></lol-speak-button>${card.word !== card.lemma ? html`<span class="hint">（${card.word}）</span>` : nothing}</div>
         <div class="card-def">${def?.t?.split('\n')[0] ?? ''}</div>
         <div class="card-meta">${card.context?.source.label?.zh_TW ? html`<span>出自 ${card.context.source.label.zh_TW}</span>` : nothing}${this.status(card)}</div>
       </div>
